@@ -23,7 +23,9 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+
+# local example file (contains secrets)
+.env.local.example
 .env
 
 # vercel
