@@ -1,0 +1,556 @@
+
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
+  :root{--red:#C0392B;--dark:#1a1a2e;--gray:#6b7280;--light:#f8f9fa;--border:#e5e7eb;--success:#16a34a;--warn:#d97706;--danger:#dc2626}
+  body{background:var(--light);color:#111;min-height:100vh}
+  .page{display:none;min-height:100vh}
+  .page.active{display:block}
+
+  /* NAV */
+  .topnav{background:var(--dark);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:60px}
+  .logo-wrap{display:flex;align-items:center;gap:12px}
+  .logo-circle{width:38px;height:38px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+  .logo-text{color:#fff;font-size:13px;line-height:1.3}
+  .logo-text strong{display:block;font-size:15px;letter-spacing:.5px}
+  .nav-btn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;transition:.2s}
+  .nav-btn:hover{background:var(--red)}
+
+  /* HERO customer */
+  .hero{background:linear-gradient(135deg,#1a1a2e 60%,#2d1b47);padding:3rem 2rem;text-align:center;color:#fff}
+  .hero-badge{background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:1rem;letter-spacing:1px;text-transform:uppercase}
+  .hero h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:.5px}
+  .hero p{color:rgba(255,255,255,.65);font-size:14px}
+
+  /* CATEGORY CARDS */
+  .cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;padding:2rem;max-width:900px;margin:0 auto}
+  .cat-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:14px}
+  .cat-card:hover{border-color:var(--red);box-shadow:0 4px 16px rgba(192,57,43,.12);transform:translateY(-2px)}
+  .cat-icon{width:44px;height:44px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .cat-label{font-weight:600;font-size:14px;color:#111;line-height:1.4}
+  .cat-sub{font-size:12px;color:var(--gray);margin-top:2px}
+  .cat-arrow{margin-left:auto;color:var(--gray);font-size:16px}
+
+  /* SEARCH PAGE */
+  .search-header{background:#fff;border-bottom:1px solid var(--border);padding:1.5rem 2rem;display:flex;align-items:center;gap:1rem}
+  .back-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:13px;color:var(--gray);display:flex;align-items:center;gap:6px;transition:.2s}
+  .back-btn:hover{border-color:var(--red);color:var(--red)}
+  .search-title{font-weight:700;font-size:16px}
+  .search-subtitle{font-size:12px;color:var(--gray)}
+
+  .search-box{background:#fff;border-radius:12px;border:1px solid var(--border);padding:1.5rem;margin:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .search-info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:13px;color:#1d4ed8;display:flex;align-items:center;gap:8px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  .form-group label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+  .form-group input{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:14px;outline:none;transition:.2s}
+  .form-group input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,.08)}
+  .btn-search{background:var(--red);color:#fff;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:600;cursor:pointer;width:100%;transition:.2s}
+  .btn-search:hover{background:#a93226}
+
+  .result-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:1.25rem 1.5rem;margin:0 1.5rem 1rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .result-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+  .result-name{font-weight:700;font-size:16px}
+  .result-meta{font-size:12px;color:var(--gray);margin-top:2px}
+  .status-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+  .status-ok{background:#dcfce7;color:#15803d}
+  .status-warn{background:#fef9c3;color:#854d0e}
+  .status-exp{background:#fee2e2;color:#991b1b}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+  .info-item{font-size:13px}
+  .info-item span{color:var(--gray);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:1px}
+  .pdf-btn{display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;margin-top:.75rem}
+  .pdf-btn:hover{background:#dbeafe}
+
+  /* LOGIN PAGE */
+  .login-wrap{min-height:100vh;background:linear-gradient(135deg,#1a1a2e,#2d1b47);display:flex;align-items:center;justify-content:center;padding:2rem}
+  .login-card{background:#fff;border-radius:16px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .login-logo{text-align:center;margin-bottom:1.5rem}
+  .login-logo .circle{width:60px;height:60px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;margin:0 auto 10px}
+  .login-logo h2{font-size:18px;font-weight:700}
+  .login-logo p{font-size:12px;color:var(--gray);margin-top:2px}
+  .login-form .form-group{margin-bottom:1rem}
+  .login-form label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+  .login-form input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;outline:none;transition:.2s}
+  .login-form input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,.08)}
+  .btn-login{width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:.5rem;transition:.2s}
+  .btn-login:hover{background:#a93226}
+  .err-msg{background:#fee2e2;color:#991b1b;border-radius:6px;padding:8px 12px;font-size:13px;margin-bottom:.75rem;display:none}
+
+  /* ADMIN DASHBOARD */
+  .admin-topnav{background:var(--dark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:10}
+  .admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:1.5rem;max-width:1400px;margin:0 auto}
+  .stat-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:1rem 1.25rem}
+  .stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-bottom:6px;font-weight:600}
+  .stat-val{font-size:26px;font-weight:700;color:#111}
+  .stat-sub{font-size:12px;color:var(--gray);margin-top:2px}
+  .stat-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+
+  .admin-toolbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.5rem;max-width:1400px;margin:0 auto}
+  .toolbar-left{display:flex;gap:.5rem}
+  .filter-btn{background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;transition:.2s;color:#111}
+  .filter-btn.active,.filter-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+  .btn-add{background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s}
+  .btn-add:hover{background:#a93226}
+
+  .table-wrap{overflow-x:auto;margin:0 1.5rem 2rem;border-radius:12px;border:1px solid var(--border);background:#fff;max-width:calc(100vw - 3rem)}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+  thead{background:#f8f9fa}
+  th{padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);border-bottom:1px solid var(--border);white-space:nowrap}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafafa}
+  .row-exp td:first-child{border-left:3px solid var(--danger)}
+  .row-warn td:first-child{border-left:3px solid var(--warn)}
+  .row-ok td:first-child{border-left:3px solid var(--success)}
+  .tbl-btn{border:none;background:none;cursor:pointer;padding:4px 8px;border-radius:5px;font-size:12px;transition:.2s}
+  .tbl-btn.edit{background:#eff6ff;color:#1d4ed8}
+  .tbl-btn.edit:hover{background:#dbeafe}
+  .tbl-btn.view{background:#f0fdf4;color:#15803d}
+  .tbl-btn.view:hover{background:#dcfce7}
+  .tbl-btn.del{background:#fef2f2;color:#dc2626}
+  .tbl-btn.del:hover{background:#fee2e2}
+
+  /* MODAL */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;padding:1rem}
+  .modal-bg.open{display:flex}
+  .modal{background:#fff;border-radius:16px;padding:2rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+  .modal-title{font-weight:700;font-size:18px}
+  .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--gray);padding:0 4px}
+  .modal-close:hover{color:#111}
+  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .modal .form-group{margin-bottom:.75rem}
+  .modal .form-group label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+  .modal .form-group input,.modal .form-group select{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;outline:none;transition:.2s}
+  .modal .form-group input:focus,.modal .form-group select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,.08)}
+  .modal-footer{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+  .btn-cancel{background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 20px;font-size:14px;cursor:pointer;transition:.2s}
+  .btn-cancel:hover{background:var(--light)}
+  .btn-save{background:var(--red);color:#fff;border:none;border-radius:8px;padding:9px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+  .btn-save:hover{background:#a93226}
+  .span-full{grid-column:1/-1}
+
+  /* PDF MODAL */
+  .pdf-viewer{background:#2b2b2b;border-radius:12px;padding:2rem;text-align:center;color:#fff}
+  .pdf-page{background:#fff;border-radius:8px;padding:2rem;margin:1rem 0;text-align:left;color:#111}
+  .pdf-page h3{font-size:16px;font-weight:700;text-align:center;margin-bottom:1rem;color:var(--red)}
+  .pdf-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb;font-size:13px}
+  .pdf-row span:first-child{color:var(--gray)}
+  .pdf-actions{display:flex;gap:.75rem;justify-content:center;margin-top:1rem}
+
+  @media(max-width:640px){
+    .form-row,.admin-stats{grid-template-columns:1fr}
+    .modal-grid{grid-template-columns:1fr}
+  }
+</style>
+
+<!-- PAGE 1: CUSTOMER HOME -->
+<div id="pg-customer" class="page active">
+  <div class="topnav">
+    <div class="logo-wrap">
+      <div class="logo-circle">MC</div>
+      <div class="logo-text"><strong>PT Multi Cipta Prima</strong>Jasa Riksa Uji & Inspeksi</div>
+    </div>
+    <button class="nav-btn" onclick="showPage('pg-login')">Login Admin</button>
+  </div>
+  <div class="hero">
+    <div class="hero-badge">Portal Customer</div>
+    <h1>Berita Acara Pemeriksaan & Pengujian</h1>
+    <p>Pilih kategori alat untuk melihat status dan sertifikat riksa uji</p>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card" onclick="showSearch('Bejana Tekan & Tangki Timbun')">
+      <div class="cat-icon">🛢️</div>
+      <div>
+        <div class="cat-label">Bejana Tekan & Tangki Timbun</div>
+        <div class="cat-sub">PUBT — Pressure Vessel</div>
+      </div>
+      <span class="cat-arrow">›</span>
+    </div>
+    <div class="cat-card" onclick="showSearch('Pesawat Uap')">
+      <div class="cat-icon">♨️</div>
+      <div>
+        <div class="cat-label">Pesawat Uap</div>
+        <div class="cat-sub">Boiler & Steam Equipment</div>
+      </div>
+      <span class="cat-arrow">›</span>
+    </div>
+    <div class="cat-card" onclick="showSearch('Pesawat Angkat & Angkut')">
+      <div class="cat-icon">🏗️</div>
+      <div>
+        <div class="cat-label">Pesawat Angkat & Pesawat Angkut</div>
+        <div class="cat-sub">PAA — Lifting & Transport</div>
+      </div>
+      <span class="cat-arrow">›</span>
+    </div>
+    <div class="cat-card" onclick="showSearch('Pesawat Tenaga & Produksi')">
+      <div class="cat-icon">⚙️</div>
+      <div>
+        <div class="cat-label">Pesawat Tenaga & Produksi</div>
+        <div class="cat-sub">PTP — Power & Production</div>
+      </div>
+      <span class="cat-arrow">›</span>
+    </div>
+    <div class="cat-card" onclick="showSearch('Instalasi Proteksi Kebakaran')">
+      <div class="cat-icon">🔥</div>
+      <div>
+        <div class="cat-label">Instalasi Proteksi Kebakaran</div>
+        <div class="cat-sub">Fire Protection System</div>
+      </div>
+      <span class="cat-arrow">›</span>
+    </div>
+  </div>
+  <div style="text-align:center;padding:2rem;color:var(--gray);font-size:12px;border-top:1px solid var(--border)">
+    © 2026 PT Multi Cipta Prima — Kota Bekasi | Jasa Riksa Uji K3
+  </div>
+</div>
+
+<!-- PAGE 2: CUSTOMER SEARCH -->
+<div id="pg-search" class="page">
+  <div class="topnav">
+    <div class="logo-wrap">
+      <div class="logo-circle">MC</div>
+      <div class="logo-text"><strong>PT Multi Cipta Prima</strong></div>
+    </div>
+    <button class="nav-btn" onclick="showPage('pg-customer')">Kembali</button>
+  </div>
+  <div class="search-header">
+    <button class="back-btn" onclick="showPage('pg-customer')">‹ Kembali</button>
+    <div>
+      <div class="search-title" id="search-title">Berita Acara</div>
+      <div class="search-subtitle">Masukkan data alat untuk melihat berita acara</div>
+    </div>
+  </div>
+  <div class="search-box">
+    <div class="search-info">ℹ️ Wajib mengisi Merk/Type dan Nomor Seri untuk melakukan pencarian</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Merk / Type</label>
+        <input id="srch-merk" type="text" placeholder="cth: Jungheinrich / EJE 120">
+      </div>
+      <div class="form-group">
+        <label>Nomor Seri</label>
+        <input id="srch-seri" type="text" placeholder="cth: FNS23317">
+      </div>
+    </div>
+    <button class="btn-search" onclick="doSearch()">Cari Berita Acara</button>
+  </div>
+  <div id="search-results"></div>
+</div>
+
+<!-- PAGE 3: LOGIN -->
+<div id="pg-login" class="page">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="circle">MC</div>
+        <h2>Admin Panel</h2>
+        <p>PT Multi Cipta Prima — Sistem Riksa Uji</p>
+      </div>
+      <div class="err-msg" id="err-msg">Username atau password salah</div>
+      <div class="login-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input id="usr" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input id="pwd" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <button class="btn-login" onclick="doLogin()">Masuk ke Sistem</button>
+      </div>
+      <p style="text-align:center;font-size:12px;color:var(--gray);margin-top:1rem">
+        Demo: user <strong>admin</strong> / pass <strong>admin123</strong>
+      </p>
+      <p style="text-align:center;margin-top:1rem"><button onclick="showPage('pg-customer')" style="background:none;border:none;color:var(--gray);font-size:12px;cursor:pointer;text-decoration:underline">← Kembali ke Halaman Customer</button></p>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4: ADMIN DASHBOARD -->
+<div id="pg-admin" class="page">
+  <div class="admin-topnav">
+    <div class="logo-wrap">
+      <div class="logo-circle">MC</div>
+      <div class="logo-text"><strong style="color:#fff">PT Multi Cipta Prima</strong><span style="color:rgba(255,255,255,.5);font-size:11px;display:block">Dashboard Riksa Uji</span></div>
+    </div>
+    <div style="display:flex;gap:.75rem;align-items:center">
+      <span style="color:rgba(255,255,255,.6);font-size:13px">👤 Admin</span>
+      <button class="nav-btn" onclick="showPage('pg-customer')">Portal Customer</button>
+      <button class="nav-btn" onclick="showPage('pg-login')">Logout</button>
+    </div>
+  </div>
+
+  <div class="admin-stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Alat</div>
+      <div class="stat-val" id="stat-total">0</div>
+      <div class="stat-sub">Terdaftar di sistem</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><span class="stat-dot" style="background:var(--danger)"></span>Kedaluwarsa</div>
+      <div class="stat-val" id="stat-exp" style="color:var(--danger)">0</div>
+      <div class="stat-sub">Perlu segera diperpanjang</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><span class="stat-dot" style="background:var(--warn)"></span>Akan Habis</div>
+      <div class="stat-val" id="stat-warn" style="color:var(--warn)">0</div>
+      <div class="stat-sub">Dalam 3 bulan ke depan</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label"><span class="stat-dot" style="background:var(--success)"></span>Aktif</div>
+      <div class="stat-val" id="stat-ok" style="color:var(--success)">0</div>
+      <div class="stat-sub">Sertifikat masih berlaku</div>
+    </div>
+  </div>
+
+  <div class="admin-toolbar">
+    <div class="toolbar-left">
+      <button class="filter-btn active" onclick="filterTable('all',this)">Semua</button>
+      <button class="filter-btn" onclick="filterTable('EXPIRED',this)">Kedaluwarsa</button>
+      <button class="filter-btn" onclick="filterTable('AKTIF',this)">Aktif</button>
+      <button class="filter-btn" onclick="filterTable('PAA',this)">PAA</button>
+      <button class="filter-btn" onclick="filterTable('PUBT',this)">PUBT</button>
+      <button class="filter-btn" onclick="filterTable('PTP',this)">PTP</button>
+    </div>
+    <button class="btn-add" onclick="openAdd()">+ Tambah Alat</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th>No</th><th>Nama Alat</th><th>Jenis</th><th>Status</th>
+          <th>Tgl Inspeksi</th><th>Tgl Expire</th><th>Merk / Type</th>
+          <th>No Seri</th><th>Tahun</th><th>Kapasitas</th><th>Lokasi</th><th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL: ADD/EDIT -->
+<div class="modal-bg" id="modal-form">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-form-title">Tambah Alat Baru</div>
+      <button class="modal-close" onclick="closeModal('modal-form')">×</button>
+    </div>
+    <div class="modal-grid">
+      <div class="form-group"><label>Nama Alat</label><input id="f-nama" type="text" placeholder="cth: Hoist Crane"></div>
+      <div class="form-group"><label>Jenis</label>
+        <select id="f-jenis"><option>PAA</option><option>PUBT</option><option>PTP</option><option>Listrik</option></select>
+      </div>
+      <div class="form-group"><label>Merk / Type</label><input id="f-merk" type="text" placeholder="cth: Demag"></div>
+      <div class="form-group"><label>No Seri</label><input id="f-seri" type="text" placeholder="cth: 92304513"></div>
+      <div class="form-group"><label>Tgl Inspeksi</label><input id="f-insp" type="date"></div>
+      <div class="form-group"><label>Tgl Expire</label><input id="f-exp" type="date"></div>
+      <div class="form-group"><label>Tahun</label><input id="f-tahun" type="number" placeholder="2024"></div>
+      <div class="form-group"><label>Kapasitas</label><input id="f-kap" type="text" placeholder="cth: 2000 Kg"></div>
+      <div class="form-group span-full"><label>Lokasi</label><input id="f-lok" type="text" placeholder="cth: Area Warehouse"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-form')">Batal</button>
+      <button class="btn-save" onclick="saveRecord()">Simpan Data</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PDF VIEW -->
+<div class="modal-bg" id="modal-pdf">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">Berita Acara — PDF Viewer</div>
+      <button class="modal-close" onclick="closeModal('modal-pdf')">×</button>
+    </div>
+    <div class="pdf-viewer">
+      <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:.5rem">DOKUMEN RESMI</div>
+      <div class="pdf-page" id="pdf-content"></div>
+      <div class="pdf-actions">
+        <button class="btn-save" onclick="alert('Fitur download PDF aktif di sistem produksi')">⬇ Download PDF</button>
+        <button class="btn-cancel" onclick="closeModal('modal-pdf')">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DB = [
+  {id:1,nama:'Vacuum Lifter',jenis:'PAA',status:'7 Hari',insp:'2026-04-22',exp:'2026-04-29',merk:'Swedia',seri:'V00013908',tahun:2018,kap:'60 Kg',lok:'Area Pilot Plant'},
+  {id:2,nama:'Manual Hand Pallet Mover',jenis:'PAA',status:'EXPIRED',insp:'2024-04-25',exp:'2025-04-25',merk:'Jungheinrich/Germany',seri:'14984521/2200kg',tahun:2017,kap:'-',lok:'Area TPS Limbah B3'},
+  {id:3,nama:'Manual Hand Pallet Mover',jenis:'PAA',status:'EXPIRED',insp:'2024-04-25',exp:'2025-04-25',merk:'Jungheinrich/Germany',seri:'14964784N/2200kg',tahun:2017,kap:'-',lok:'Area Warehouse'},
+  {id:4,nama:'Manual Hand Pallet Mover',jenis:'PAA',status:'4 Bulan',insp:'2025-08-19',exp:'2026-08-19',merk:'Jungheinrich/Germany',seri:'14964785N/2200kg',tahun:2017,kap:'2.200 Kg',lok:'Area Warehouse'},
+  {id:5,nama:'Manual Hand Pallet Mover',jenis:'PAA',status:'4 Bulan',insp:'2025-08-19',exp:'2026-08-19',merk:'Jungheinrich/Germany',seri:'14994358N/2200kg',tahun:2017,kap:'-',lok:'Area Production'},
+  {id:6,nama:'Bejana Tekan (Air Receiver Tank)',jenis:'PUBT',status:'10 Hari',insp:'2025-04-25',exp:'2026-04-25',merk:'Silinder Vertical',seri:'1000 L/B',tahun:2019,kap:'-',lok:'Area Pabrik'},
+  {id:7,nama:'Bejana Tekan (Air Receiver Tank)',jenis:'PUBT',status:'10 Hari',insp:'2025-04-25',exp:'2026-04-25',merk:'Silinder Vertical',seri:'1000 L/A',tahun:2019,kap:'-',lok:'Area Pabrik'},
+  {id:8,nama:'Manual Hand Pallet Mover',jenis:'PAA',status:'EXPIRED',insp:'2024-04-29',exp:'2025-04-29',merk:'Jungheinrich / AM 110',seri:'E721804169(S4)',tahun:2017,kap:'-',lok:'Area Produksi'},
+  {id:9,nama:'Hoist Crane',jenis:'PAA',status:'1 Bulan',insp:'2025-06-01',exp:'2026-06-01',merk:'Demag',seri:'92304513',tahun:2012,kap:'2000 Kg',lok:'Station 3'},
+  {id:10,nama:'Hoist Crane',jenis:'PAA',status:'1 Bulan',insp:'2025-06-01',exp:'2026-06-01',merk:'Demag',seri:'92304514',tahun:2012,kap:'2000 Kg',lok:'Station 4'},
+  {id:11,nama:'Hoist Crane',jenis:'PAA',status:'1 Bulan',insp:'2025-06-01',exp:'2026-06-01',merk:'Demag',seri:'92304515',tahun:2012,kap:'2000 Kg',lok:'Station 1'},
+  {id:12,nama:'Hoist Crane',jenis:'PAA',status:'1 Bulan',insp:'2025-06-01',exp:'2026-06-01',merk:'Demag',seri:'92304516',tahun:2012,kap:'2000 Kg',lok:'Station 2'},
+  {id:13,nama:'Lift Elevator',jenis:'PAA',status:'29 Hari',insp:'2025-05-14',exp:'2026-05-14',merk:'HAISUNG',seri:'P090134',tahun:2012,kap:'1.500 Kg',lok:'Gedung Produksi'},
+  {id:14,nama:'Hand Pallet',jenis:'PAA',status:'29 Hari',insp:'2025-05-14',exp:'2026-05-14',merk:'Jungheinrich AG / EJE 120',seri:'91568932',tahun:2012,kap:'3500 Kg',lok:'Produksi'},
+  {id:15,nama:'Hand Pallet',jenis:'PAA',status:'29 Hari',insp:'2025-05-14',exp:'2026-05-14',merk:'Jungheinrich / EJE 120',seri:'FNS23317',tahun:2016,kap:'2000 Kg',lok:'Warehouse'},
+  {id:16,nama:'Hand Pallet',jenis:'PAA',status:'29 Hari',insp:'2025-05-14',exp:'2026-05-14',merk:'Jungheinrich / EJE 120',seri:'FNS23317',tahun:2016,kap:'2000 Kg',lok:'Warehouse'},
+  {id:17,nama:'Vacuum Lifter',jenis:'PAA',status:'29 Hari',insp:'2025-05-14',exp:'2026-05-14',merk:'Tawi / VM160',seri:'16903',tahun:2014,kap:'60 Kg',lok:'AC ROOM 2'},
+  {id:18,nama:'Vacuum Lifter',jenis:'PAA',status:'29 Hari',insp:'2025-05-14',exp:'2026-05-14',merk:'Tawi / VM160',seri:'18599',tahun:2018,kap:'60 Kg',lok:'Produksi'},
+  {id:19,nama:'Instalasi Listrik',jenis:'Listrik',status:'1 Bulan',insp:'2025-05-15',exp:'2026-05-15',merk:'-',seri:'-',tahun:2012,kap:'-',lok:'Gudang PT Firmenich'},
+  {id:20,nama:'Genset',jenis:'PTP',status:'1 Bulan',insp:'2025-05-15',exp:'2026-05-15',merk:'Cummins India Limited',seri:'A12K287202',tahun:2012,kap:'-',lok:'Ruang Genset'},
+  {id:21,nama:'Bejana Tekan / Air Compressor Tank',jenis:'PUBT',status:'1 Bulan',insp:'2025-06-05',exp:'2026-06-05',merk:'Silinder Horizontal',seri:'0398/NW 50 Y',tahun:2014,kap:'-',lok:'Area MSD Pilot Plant'},
+];
+
+let editId = null;
+let currentFilter = 'all';
+let currentCategory = '';
+
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(id==='pg-admin')renderAdmin()}
+
+function showSearch(cat){
+  currentCategory = cat;
+  document.getElementById('search-title').textContent = cat;
+  document.getElementById('srch-merk').value='';
+  document.getElementById('srch-seri').value='';
+  document.getElementById('search-results').innerHTML='';
+  showPage('pg-search');
+}
+
+function getStatusClass(s){
+  if(s==='EXPIRED')return 'status-exp';
+  const n=parseInt(s);
+  if(!isNaN(n)&&n<=30)return 'status-warn';
+  return 'status-ok';
+}
+function getStatusLabel(s){
+  if(s==='EXPIRED')return 'Kedaluwarsa';
+  return 'Berlaku — '+s;
+}
+
+function doSearch(){
+  const merk=document.getElementById('srch-merk').value.trim().toLowerCase();
+  const seri=document.getElementById('srch-seri').value.trim().toLowerCase();
+  if(!merk||!seri){alert('Harap isi Merk/Type dan Nomor Seri terlebih dahulu');return}
+  const res=DB.filter(r=>r.merk.toLowerCase().includes(merk)&&r.seri.toLowerCase().includes(seri));
+  const el=document.getElementById('search-results');
+  if(!res.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--gray)"><div style="font-size:2rem">🔍</div><p style="margin-top:.5rem">Data tidak ditemukan. Periksa kembali Merk/Type dan Nomor Seri.</p></div>';return}
+  el.innerHTML=res.map(r=>`
+  <div class="result-card">
+    <div class="result-header">
+      <div><div class="result-name">${r.nama}</div><div class="result-meta">${r.jenis} — No. ${r.id}</div></div>
+      <span class="status-badge ${getStatusClass(r.status)}">${getStatusLabel(r.status)}</span>
+    </div>
+    <div class="info-grid">
+      <div class="info-item"><span>Merk / Type</span>${r.merk}</div>
+      <div class="info-item"><span>No Seri</span>${r.seri}</div>
+      <div class="info-item"><span>Tgl Inspeksi</span>${r.insp}</div>
+      <div class="info-item"><span>Tgl Expire</span>${r.exp}</div>
+      <div class="info-item"><span>Kapasitas</span>${r.kap||'-'}</div>
+      <div class="info-item"><span>Lokasi</span>${r.lok}</div>
+    </div>
+    <button class="pdf-btn" onclick="viewPDF(${r.id})">📄 Lihat Berita Acara PDF</button>
+  </div>`).join('');
+}
+
+function doLogin(){
+  const u=document.getElementById('usr').value;
+  const p=document.getElementById('pwd').value;
+  const err=document.getElementById('err-msg');
+  if(u==='admin'&&p==='admin123'){err.style.display='none';showPage('pg-admin')}
+  else{err.style.display='block'}
+}
+
+function renderAdmin(){
+  updateStats();
+  renderTable(DB);
+}
+
+function updateStats(){
+  const exp=DB.filter(r=>r.status==='EXPIRED').length;
+  const warn=DB.filter(r=>{const n=parseInt(r.status);return !isNaN(n)&&n<=30}).length;
+  const ok=DB.filter(r=>r.status!=='EXPIRED'&&(isNaN(parseInt(r.status))||parseInt(r.status)>30)).length;
+  document.getElementById('stat-total').textContent=DB.length;
+  document.getElementById('stat-exp').textContent=exp;
+  document.getElementById('stat-warn').textContent=warn;
+  document.getElementById('stat-ok').textContent=ok;
+}
+
+function renderTable(data){
+  const tb=document.getElementById('table-body');
+  tb.innerHTML=data.map((r,i)=>{
+    const cls=r.status==='EXPIRED'?'row-exp':parseInt(r.status)<=30&&!isNaN(parseInt(r.status))?'row-warn':'row-ok';
+    return `<tr class="${cls}">
+      <td>${i+1}</td><td><strong>${r.nama}</strong></td><td><span style="background:#f1f5f9;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;color:#475569">${r.jenis}</span></td>
+      <td><span class="status-badge ${getStatusClass(r.status)}">${r.status}</span></td>
+      <td>${r.insp}</td><td>${r.exp}</td><td>${r.merk}</td><td>${r.seri}</td>
+      <td>${r.tahun}</td><td>${r.kap||'-'}</td><td>${r.lok}</td>
+      <td style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="tbl-btn view" onclick="viewPDF(${r.id})">📄 PDF</button>
+        <button class="tbl-btn edit" onclick="openEdit(${r.id})">✏️ Edit</button>
+        <button class="tbl-btn del" onclick="delRecord(${r.id})">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTable(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  let data=DB;
+  if(f==='EXPIRED')data=DB.filter(r=>r.status==='EXPIRED');
+  else if(f==='AKTIF')data=DB.filter(r=>r.status!=='EXPIRED');
+  else if(f!=='all')data=DB.filter(r=>r.jenis===f);
+  renderTable(data);
+}
+
+function openAdd(){editId=null;document.getElementById('modal-form-title').textContent='Tambah Alat Baru';['nama','merk','seri','lok','kap','tahun','insp','exp'].forEach(k=>document.getElementById('f-'+k).value='');document.getElementById('modal-form').classList.add('open')}
+
+function openEdit(id){
+  editId=id;
+  const r=DB.find(x=>x.id===id);
+  document.getElementById('modal-form-title').textContent='Edit Data Alat';
+  document.getElementById('f-nama').value=r.nama;
+  document.getElementById('f-jenis').value=r.jenis;
+  document.getElementById('f-merk').value=r.merk;
+  document.getElementById('f-seri').value=r.seri;
+  document.getElementById('f-insp').value=r.insp;
+  document.getElementById('f-exp').value=r.exp;
+  document.getElementById('f-tahun').value=r.tahun;
+  document.getElementById('f-kap').value=r.kap;
+  document.getElementById('f-lok').value=r.lok;
+  document.getElementById('modal-form').classList.add('open');
+}
+
+function saveRecord(){
+  const data={nama:document.getElementById('f-nama').value,jenis:document.getElementById('f-jenis').value,merk:document.getElementById('f-merk').value,seri:document.getElementById('f-seri').value,insp:document.getElementById('f-insp').value,exp:document.getElementById('f-exp').value,tahun:document.getElementById('f-tahun').value,kap:document.getElementById('f-kap').value,lok:document.getElementById('f-lok').value,status:'Aktif'};
+  if(!data.nama){alert('Nama alat wajib diisi');return}
+  if(editId){Object.assign(DB.find(r=>r.id===editId),data)}
+  else{data.id=DB.length+1;DB.push(data)}
+  closeModal('modal-form');renderAdmin();
+}
+
+function delRecord(id){
+  if(confirm('Hapus data ini?')){const i=DB.findIndex(r=>r.id===id);if(i>-1)DB.splice(i,1);renderAdmin();}
+}
+
+function viewPDF(id){
+  const r=DB.find(x=>x.id===id);
+  document.getElementById('pdf-content').innerHTML=`
+    <h3>BERITA ACARA PEMERIKSAAN DAN PENGUJIAN</h3>
+    <p style="text-align:center;font-size:12px;color:var(--gray);margin-bottom:1rem">PT Multi Cipta Prima — Kota Bekasi</p>
+    <div class="pdf-row"><span>Nama Alat</span><span>${r.nama}</span></div>
+    <div class="pdf-row"><span>Jenis</span><span>${r.jenis}</span></div>
+    <div class="pdf-row"><span>Merk / Type</span><span>${r.merk}</span></div>
+    <div class="pdf-row"><span>Nomor Seri</span><span>${r.seri}</span></div>
+    <div class="pdf-row"><span>Tahun Pembuatan</span><span>${r.tahun}</span></div>
+    <div class="pdf-row"><span>Kapasitas</span><span>${r.kap||'-'}</span></div>
+    <div class="pdf-row"><span>Lokasi</span><span>${r.lok}</span></div>
+    <div class="pdf-row"><span>Tanggal Inspeksi</span><span>${r.insp}</span></div>
+    <div class="pdf-row"><span>Tanggal Berlaku s.d.</span><span>${r.exp}</span></div>
+    <div class="pdf-row"><span>Status</span><span><strong>${r.status}</strong></span></div>
+    <p style="font-size:11px;color:var(--gray);margin-top:1rem;text-align:center">Dokumen ini diterbitkan secara resmi oleh PT Multi Cipta Prima</p>`;
+  document.getElementById('modal-pdf').classList.add('open');
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+renderAdmin();
+</script>
